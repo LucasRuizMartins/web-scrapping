@@ -5,6 +5,9 @@ from entities.Consolidado import  *
 def gerar_dataframe(path):
 
     # -------------- CALCULAR MULTISSETORIAL
+    #return ler_zip(path)
+
+
     df = ler_zip(path)
     consolidado = Consolidado(df)
     consolidadoFaturaCartao = Consolidado(filtrar_tipo(df,"Operacao Cartao de Credito DIGITAL"))

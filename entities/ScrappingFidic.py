@@ -45,7 +45,13 @@ def gerar_relatorio(data, nome_fundo, driver, url):
 
     # Selecionar o fundo
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.chzn-single.chzn-default"))).click()
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f"//ul[contains(@class, 'chzn-results')]//li[contains(text(), '{nome_fundo}')]"))).click
+    #WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.chzn-single.chzn-default"))).send_keys(nome_fundo)
+    #WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.chzn-single.chzn-default"))).click()
+
+    option = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f"//ul[contains(@class, 'chzn-results')]//li[contains(text(), '{nome_fundo}')]")))
+    option.click()
+    #option.send_keys(nome_fundo)
+    #driver.switch_to.active_element.send_keys(Keys.RETURN)
 
     # Preencher a data
     data_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "data")))
@@ -74,13 +80,17 @@ def gerar_relatorio(data, nome_fundo, driver, url):
     # Aguarde o download ou prossiga com outras ações
     time.sleep(1)
 
-def baixar_relatorio(driver,nome_fundo):
-    driver.get("https://portalfidc3.brltrust.com.br/portal/reports/meusRelatorios")
+def baixar_relatorio(driver,nome_fundo,url):
+    driver.get(url+"/reports/meusRelatorios")
 
    # tabela = driver.find_element(By.CLASS_NAME, "table-striped")
     tabela = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "table-striped")))
     linhas = tabela.find_elements(By.XPATH, ".//tbody/tr")
-    nome_fundo_slice = nome_fundo[:17] + "..."
+
+    if len(nome_fundo) > 17:
+        nome_fundo_slice = nome_fundo[:17] + "..."
+    else:
+        nome_fundo_slice = nome_fundo
 
     for linha in linhas:
         status = linha.find_elements(By.TAG_NAME, "td")[3].text.strip()

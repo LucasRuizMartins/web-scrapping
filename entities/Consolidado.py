@@ -92,10 +92,24 @@ def calcular_ticket_medio_quinzena(df,coluna_calculada,coluna_data,data):
 
 
 #------------ CALCULOS SIMPLES
-
+"""
 def calcular_ticket_medio(df,coluna_calculada):
     converter_col_numeric(df,coluna_calculada)
     return round(df[coluna_calculada].sum() / df.shape[0],2)
+"""
+
+def calcular_ticket_medio(df, coluna_calculada):
+    if df.empty:  # Verifica se o DataFrame está vazio
+        print("DataFrame está vazio. Não é possível calcular o ticket médio.")
+        return 0  # Valor padrão ou levante uma exceção, se preferir.
+
+    converter_col_numeric(df, coluna_calculada)
+
+    try:
+        return round(df[coluna_calculada].sum() / df.shape[0], 2)
+    except ZeroDivisionError:
+        print("Erro: divisão por zero.")
+        return 0
 
 def calcular_titulos_vencidos(df):
     return  df[df["PRAZO_ATUAL"] < 1].shape[0]

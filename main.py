@@ -1,5 +1,6 @@
 import os
 import time
+from entities.Consolidado import Consolidado, imprimir
 from entities.ScrappingFidic import *
 from services.ConversorService import *
 from services.dataframeService import gerar_dataframe
@@ -14,11 +15,11 @@ from io import BytesIO
 
 # Configuração do WebDriver
 #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-#service = Service(ChromeDriverManager().install())
-#driver = webdriver.Chrome(service=service)
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
 
 #nome_fundo = "CDC EMPRÉSTIMOS FIDC  CLASSE ÚNICA FECHADA"
-#nome_fundo = "FIDARA FIDC"
+nome_fundo = "FIDARA FIDC"
 #nome_fundo = "ENEL2 LEGAL CLAIMS FIDC CLASSE UNICA FECHADA"
 
 data ="31/12/2024"
@@ -29,9 +30,9 @@ data ="31/12/2024"
 #password = os.getenv('SENHA_FIDC3')
 
 #FIDIC4
-#url = "https://portalfidc4.singulare.com.br/portal/"
-#user = os.getenv('LOGIN_FIDC4')
-#password = os.getenv('SENHA_FIDC4')
+url = "https://portalfidc4.singulare.com.br/portal/"
+user = os.getenv('LOGIN_FIDC4')
+password = os.getenv('SENHA_FIDC4')
 
 
 
@@ -42,20 +43,23 @@ data ="31/12/2024"
 
 try:
 
+    realizar_login(url,user,password,nome_fundo,driver)
+    time.sleep(2)
+    gerar_relatorio(data, nome_fundo, driver,url)
+    time.sleep(2)
 
-    #realizar_login(url, user,password, driver)
-    #realizar_login(url,user,password,nome_fundo,driver)
-    #time.sleep(2)
-    #gerar_relatorio(data, nome_fundo, driver,url)
-    #time.sleep(5)
+    path_arq = baixar_relatorio(driver,nome_fundo,url)
+    df = ler_zip(path_arq)
+    #df2 = gerar_dataframe(path_arq)
+    time.sleep(2)
 
-    #path_arq = baixar_relatorio(driver,nome_fundo)
-    #df = ler_zip(path_arq)
-    #df = gerar_df_multisetorial(path_arq)
+
+
+    #df = gerar_dataframe(path_arq)
     #time.sleep(2)
     #df=gerar_df_multisetorial("C:\\Users\Lucas Martins\\Downloads\\23956882000169_Estoque_SB CREDITO FIDC MULTISSETORIAL (1).zip")
     #df=gerar_df_multisetorial("C:\\Users\Lucas Martins\\Downloads\\50200709000109_Estoque_MOOVPAY FIDC - SUBORDINADA.zip")
-    df = gerar_dataframe(r"C:\Users\Lucas Martins\Downloads\50200709000109_Estoque_MOOVPAY FIDC - SUBORDINADA.zip")
+    #df = gerar_dataframe(r"C:\Users\Lucas Martins\Downloads\50200709000109_Estoque_MOOVPAY FIDC - SUBORDINADA.zip")
 
     #df = remover_colunas(df)
 
@@ -64,7 +68,7 @@ try:
 
 finally:
     print("fim")
-    #driver.quit()
+    driver.quit()
     #conn.close()
 
 
